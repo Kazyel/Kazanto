@@ -1,3 +1,3 @@
-module github.com/kazyel/Poke-REPL
+module github.com/Kazyel/Poke-CLI
 
 go 1.22.6
