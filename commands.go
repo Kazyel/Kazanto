@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/Kazyel/Poke-CLI/api"
 )
 
 type cliCommand struct {
@@ -28,6 +30,16 @@ func Commands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message.",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays the next 20 maps.", 
+			callback:    api.GetNextLocations,
+		},
+		"mapback": {
+			name:        "mapback",
+			description: "Displays the previous 20 maps.", 
+			callback:    api.GetPreviousLocations,
 		},
 		"exit": {
 			name:        "exit",

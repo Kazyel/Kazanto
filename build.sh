@@ -1,3 +1,3 @@
 #!/bin/sh 
 
-go build && ./Poke-REPL
+go build && ./Poke-CLI

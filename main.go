@@ -41,6 +41,12 @@ func main() {
 				fmt.Println(command.description)
 			}
 
+		case "map":
+			commandMap["map"].callback()
+		
+		case "mapback":	
+			commandMap["mapback"].callback()
+
 		case "exit":
 			commandMap["exit"].callback()
 
