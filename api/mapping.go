@@ -6,6 +6,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/Kazyel/Poke-CLI/cache"
 )
 
 type LocationResponse struct {
@@ -19,6 +22,7 @@ type LocationResponse struct {
 }
 
 var locations LocationResponse = LocationResponse{}
+var locationsCache *cache.Cache = cache.NewCache(30 * time.Second)
 
 func unmarshalLocations(body []byte, locations *LocationResponse) error {
 	err := json.Unmarshal(body, &locations)
@@ -40,15 +44,33 @@ func printLocations(locations LocationResponse) {
 }
 
 func GetNextLocations() error {
-	var url string
+	url := "https://pokeapi.co/api/v2/location-area/"
 
 	if locations.Next == nil && locations.Results != nil {
 		fmt.Println("No more next locations.")
 		return nil
-	} else if locations.Next != nil {
+	}
+
+	if locations.Next != nil {
 		url = locations.Next.(string)
-	} else {
-		url = "https://pokeapi.co/api/v2/location-area/"
+	}
+
+	cachedLocations, ok := locationsCache.GetFromCache(url)
+
+	if ok {
+		body := cachedLocations
+		err := unmarshalLocations(body, &locations)
+
+		if err != nil {
+			log.Fatalf("Error unmarshalling locations response.")
+		}
+
+		if locations.Results != nil {
+			fmt.Println("[CACHED] Getting next locations...")
+			printLocations(locations)
+		}
+
+		return nil
 	}
 
 	response, err := http.Get(url)
@@ -58,6 +80,7 @@ func GetNextLocations() error {
 	}
 
 	body, err := io.ReadAll(response.Body)
+	locationsCache.AddToCache(url, []byte(body))
 	response.Body.Close()
 
 	if response.StatusCode > 299 {
@@ -74,11 +97,6 @@ func GetNextLocations() error {
 		log.Fatalf("Error unmarshalling locations response.")
 	}
 
-	if locations.Results == nil {
-		fmt.Println("\nNo more next locations.")
-		return nil
-	}
-
 	if locations.Results != nil {
 		fmt.Println("Getting next locations...")
 		printLocations(locations)
@@ -92,9 +110,28 @@ func GetPreviousLocations() error {
 
 	if locations.Previous == nil {
 		fmt.Println("No previous locations.")
+		locations.Next = "https://pokeapi.co/api/v2/location-area/"
 		return nil
 	} else {
 		url = locations.Previous.(string)
+	}
+
+	cachedLocations, ok := locationsCache.GetFromCache(url)
+
+	if ok {
+		body := cachedLocations
+		err := unmarshalLocations(body, &locations)
+
+		if err != nil {
+			log.Fatalf("Error unmarshalling locations response.")
+		}
+
+		if locations.Results != nil {
+			fmt.Println("[CACHED] Getting previous locations...")
+			printLocations(locations)
+		}
+
+		return nil
 	}
 
 	response, err := http.Get(url)
@@ -104,6 +141,7 @@ func GetPreviousLocations() error {
 	}
 
 	body, err := io.ReadAll(response.Body)
+	locationsCache.AddToCache(url, []byte(body))
 	response.Body.Close()
 
 	if response.StatusCode > 299 {

@@ -8,6 +8,7 @@ import (
 )
 
 func printWelcomeMessage() {
+
 	fmt.Println("\n*-------------------------------*")
 	fmt.Println("\n Hey, welcome to Poke-CLI!")
 	fmt.Println(" Type 'help' for a list of commands.")
@@ -43,8 +44,8 @@ func main() {
 
 		case "map":
 			commandMap["map"].callback()
-		
-		case "mapback":	
+
+		case "mapback":
 			commandMap["mapback"].callback()
 
 		case "exit":
