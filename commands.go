@@ -24,9 +24,9 @@ func commandHelp() error {
 	return nil
 }
 
+// Commands returns a map of commands.
 func Commands() map[string]cliCommand {
-
-	commandsMap := map[string]cliCommand{
+	return map[string]cliCommand{
 		"help": {
 			name:        "help",
 			description: "Displays a help message.",
@@ -55,6 +55,4 @@ func Commands() map[string]cliCommand {
 			callback:    func(...interface{}) error { return commandExit() },
 		},
 	}
-
-	return commandsMap
 }

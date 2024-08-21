@@ -23,6 +23,7 @@ type ExploreResponse struct {
 var exploreResponse ExploreResponse = ExploreResponse{}
 var exploreCache *cache.Cache = cache.NewCache(300 * time.Second)
 
+// UnmarshalExploreResponse unmarshals the response from the PokeAPI.
 func UnmarshalExploreResponse(body []byte, exploreResponse *ExploreResponse) error {
 	err := json.Unmarshal(body, &exploreResponse)
 
@@ -34,6 +35,11 @@ func UnmarshalExploreResponse(body []byte, exploreResponse *ExploreResponse) err
 	return nil
 }
 
+/*
+checkExploreCache checks if the response from the PokeAPI is cached.
+If it is, it prints the cached response and returns true.
+Otherwise, it returns false.
+*/
 func checkExploreCache(url string, location string) bool {
 	cachedExploreResponse, ok := exploreCache.GetFromCache(url)
 
@@ -57,6 +63,11 @@ func checkExploreCache(url string, location string) bool {
 	return false
 }
 
+/*
+ExploreLocation sends a request to the PokeAPI to explore a location.
+It first checks if the response is cached, and if it is, it prints the cached response.
+Otherwise, it sends a request to the PokeAPI and prints the response.
+*/
 func ExploreLocation(location string) error {
 	urlToSearch := "https://pokeapi.co/api/v2/location-area/" + location
 

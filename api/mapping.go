@@ -24,6 +24,7 @@ type LocationResponse struct {
 var locations LocationResponse = LocationResponse{}
 var locationsCache *cache.Cache = cache.NewCache(300 * time.Second)
 
+// unmarshalLocations unmarshals the response from the PokeAPI.
 func unmarshalLocations(body []byte, locations *LocationResponse) error {
 	err := json.Unmarshal(body, &locations)
 
@@ -35,6 +36,7 @@ func unmarshalLocations(body []byte, locations *LocationResponse) error {
 	return nil
 }
 
+// printLocations prints the locations from the PokeAPI.
 func printLocations(locations LocationResponse) {
 	fmt.Print("Current locations:\n\n")
 
@@ -43,6 +45,11 @@ func printLocations(locations LocationResponse) {
 	}
 }
 
+/*
+checkLocationCache checks if the response from the PokeAPI is cached.
+If it is, it prints the cached response and returns true.
+Otherwise, it returns false.
+*/
 func checkLocationCache(url string) bool {
 	cachedLocations, ok := locationsCache.GetFromCache(url)
 
@@ -64,6 +71,11 @@ func checkLocationCache(url string) bool {
 	return false
 }
 
+/*
+GetNextLocations sends a request to the PokeAPI to get the next 20 locations.
+It first checks if the response is cached, and if it is, it prints the cached response.
+Otherwise, it sends a request to the PokeAPI and prints the response.
+*/
 func GetNextLocations() error {
 	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
 
@@ -114,6 +126,11 @@ func GetNextLocations() error {
 	return nil
 }
 
+/*
+GetPreviousLocations sends a request to the PokeAPI to get the previous 20 locations.
+It first checks if the response is cached, and if it is, it prints the cached response.
+Otherwise, it sends a request to the PokeAPI and prints the response.
+*/
 func GetPreviousLocations() error {
 	var url string
 

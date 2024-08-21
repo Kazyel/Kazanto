@@ -15,6 +15,7 @@ type Cache struct {
 	mutex   *sync.Mutex
 }
 
+// NewCache creates a new cache with the given interval.
 func NewCache(interval time.Duration) *Cache {
 	newCache := &Cache{
 		entries: make(map[string]CacheEntry),
@@ -25,6 +26,7 @@ func NewCache(interval time.Duration) *Cache {
 	return newCache
 }
 
+// AddToCache adds a value to the cache with the given key.
 func (cache *Cache) AddToCache(key string, val []byte) {
 	cache.mutex.Lock()
 
@@ -36,6 +38,7 @@ func (cache *Cache) AddToCache(key string, val []byte) {
 	defer cache.mutex.Unlock()
 }
 
+// GetFromCache gets a value from the cache with the given key.
 func (cache *Cache) GetFromCache(key string) ([]byte, bool) {
 	cache.mutex.Lock()
 	defer cache.mutex.Unlock()
@@ -47,6 +50,7 @@ func (cache *Cache) GetFromCache(key string) ([]byte, bool) {
 	return nil, false
 }
 
+// reapLoop reaps the cache every interval.
 func (cache *Cache) reapLoop(interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
