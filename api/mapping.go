@@ -43,18 +43,7 @@ func printLocations(locations LocationResponse) {
 	}
 }
 
-func GetNextLocations() error {
-	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
-
-	if locations.Next == nil && locations.Results != nil {
-		fmt.Println("No more next locations.")
-		return nil
-	}
-
-	if locations.Next != nil {
-		url = locations.Next.(string)
-	}
-
+func checkLocationCache(url string) bool {
 	cachedLocations, ok := locationsCache.GetFromCache(url)
 
 	if ok {
@@ -69,6 +58,27 @@ func GetNextLocations() error {
 			printLocations(locations)
 		}
 
+		return true
+	}
+
+	return false
+}
+
+func GetNextLocations() error {
+	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
+
+	if locations.Next == nil && locations.Results != nil {
+		fmt.Println("No more next locations.")
+		return nil
+	}
+
+	if locations.Next != nil {
+		url = locations.Next.(string)
+	}
+
+	cacheExists := checkLocationCache(url)
+
+	if cacheExists {
 		return nil
 	}
 

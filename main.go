@@ -8,7 +8,6 @@ import (
 )
 
 func printWelcomeMessage() {
-
 	fmt.Println("\n*-------------------------------*")
 	fmt.Println("\n Hey, welcome to Poke-CLI!")
 	fmt.Println(" Type 'help' for a list of commands.")
@@ -52,6 +51,11 @@ func main() {
 		case "explore":
 			if len(args) < 2 {
 				fmt.Println("Please provide a location.")
+				continue
+			}
+
+			if len(args) > 2 {
+				fmt.Println("Too many arguments. Please provide only one location.")
 				continue
 			}
 
