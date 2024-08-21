@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(...interface{}) error
 }
 
 func commandExit() error {
@@ -25,26 +25,36 @@ func commandHelp() error {
 }
 
 func Commands() map[string]cliCommand {
-	return map[string]cliCommand{
+
+	commandsMap := map[string]cliCommand{
 		"help": {
 			name:        "help",
 			description: "Displays a help message.",
-			callback:    commandHelp,
+			callback:    func(...interface{}) error { return commandHelp() },
 		},
 		"map": {
 			name:        "map",
-			description: "Displays the next 20 maps.", 
-			callback:    api.GetNextLocations,
+			description: "Displays the next 20 maps.",
+			callback:    func(...interface{}) error { return api.GetNextLocations() },
 		},
 		"mapback": {
 			name:        "mapback",
-			description: "Displays the previous 20 maps.", 
-			callback:    api.GetPreviousLocations,
+			description: "Displays the previous 20 maps.",
+			callback:    func(...interface{}) error { return api.GetPreviousLocations() },
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore a location.",
+			callback: func(location ...interface{}) error {
+				return api.ExploreLocation(location[0].(string))
+			},
 		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex.",
-			callback:    commandExit,
+			callback:    func(...interface{}) error { return commandExit() },
 		},
 	}
+
+	return commandsMap
 }

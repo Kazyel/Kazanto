@@ -22,7 +22,7 @@ type LocationResponse struct {
 }
 
 var locations LocationResponse = LocationResponse{}
-var locationsCache *cache.Cache = cache.NewCache(30 * time.Second)
+var locationsCache *cache.Cache = cache.NewCache(300 * time.Second)
 
 func unmarshalLocations(body []byte, locations *LocationResponse) error {
 	err := json.Unmarshal(body, &locations)
@@ -44,7 +44,7 @@ func printLocations(locations LocationResponse) {
 }
 
 func GetNextLocations() error {
-	url := "https://pokeapi.co/api/v2/location-area/"
+	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
 
 	if locations.Next == nil && locations.Results != nil {
 		fmt.Println("No more next locations.")
@@ -58,8 +58,7 @@ func GetNextLocations() error {
 	cachedLocations, ok := locationsCache.GetFromCache(url)
 
 	if ok {
-		body := cachedLocations
-		err := unmarshalLocations(body, &locations)
+		err := unmarshalLocations(cachedLocations, &locations)
 
 		if err != nil {
 			log.Fatalf("Error unmarshalling locations response.")
@@ -112,15 +111,13 @@ func GetPreviousLocations() error {
 		fmt.Println("No previous locations.")
 		locations.Next = "https://pokeapi.co/api/v2/location-area/"
 		return nil
-	} else {
-		url = locations.Previous.(string)
 	}
 
+	url = locations.Previous.(string)
 	cachedLocations, ok := locationsCache.GetFromCache(url)
 
 	if ok {
-		body := cachedLocations
-		err := unmarshalLocations(body, &locations)
+		err := unmarshalLocations(cachedLocations, &locations)
 
 		if err != nil {
 			log.Fatalf("Error unmarshalling locations response.")
@@ -149,7 +146,7 @@ func GetPreviousLocations() error {
 	}
 
 	if err != nil {
-		log.Fatalf("unmarshallLocationsreading response body.")
+		log.Fatalf("Error reading response body.")
 	}
 
 	err = unmarshalLocations(body, &locations)

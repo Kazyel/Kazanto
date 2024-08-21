@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/Kazyel/Poke-CLI/api"
 )
 
 func printWelcomeMessage() {
@@ -47,6 +49,9 @@ func main() {
 
 		case "mapback":
 			commandMap["mapback"].callback()
+
+		case "explore":
+			api.ExploreLocation("test")
 
 		case "exit":
 			commandMap["exit"].callback()
