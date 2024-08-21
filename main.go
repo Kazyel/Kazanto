@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/Kazyel/Poke-CLI/api"
 )
 
 func printWelcomeMessage() {
@@ -33,9 +31,10 @@ func main() {
 			continue
 		}
 
-		input := strings.ToLower(strings.TrimSpace(scanner.Text()))
+		commandLine := strings.ToLower(strings.TrimSpace(scanner.Text()))
+		args := strings.Split(commandLine, " ")
 
-		switch input {
+		switch args[0] {
 		case "help":
 			commandMap["help"].callback()
 
@@ -51,7 +50,12 @@ func main() {
 			commandMap["mapback"].callback()
 
 		case "explore":
-			api.ExploreLocation("test")
+			if len(args) < 2 {
+				fmt.Println("Please provide a location.")
+				continue
+			}
+
+			commandMap["explore"].callback(args[1])
 
 		case "exit":
 			commandMap["exit"].callback()
