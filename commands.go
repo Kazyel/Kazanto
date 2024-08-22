@@ -49,6 +49,11 @@ func Commands() map[string]cliCommand {
 				return api.ExploreLocation(location[0].(string))
 			},
 		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a Pokemon.",
+			callback:    func(pokemon ...interface{}) error { return api.CatchPokemon(pokemon[0].(api.Pokemon)) },
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex.",

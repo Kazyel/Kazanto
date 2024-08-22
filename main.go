@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/Kazyel/Poke-CLI/api"
 )
 
 func printWelcomeMessage() {
@@ -60,6 +62,13 @@ func main() {
 			}
 
 			commandMap["explore"].callback(args[1])
+
+		case "catch":
+			pokemon := api.Pokemon{
+				Name: "Pikachu2",
+				Type: "Electric",
+			}
+			commandMap["catch"].callback(pokemon)
 
 		case "exit":
 			commandMap["exit"].callback()
