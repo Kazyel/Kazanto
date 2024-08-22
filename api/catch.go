@@ -6,26 +6,7 @@ import (
 	"time"
 )
 
-var pokedex = Pokedex{
-	Pokemons: map[string]Pokemon{
-		"Pikachu": {
-			Name: "Pikachu",
-			Type: "Electric",
-		},
-		"Charmander": {
-			Name: "Charmander",
-			Type: "Fire",
-		},
-		"Squirtle": {
-			Name: "Squirtle",
-			Type: "Water",
-		},
-		"Bulbasaur": {
-			Name: "Bulbasaur",
-			Type: "Grass",
-		},
-	},
-}
+var pokedex *Pokedex = CreatePokedex()
 
 func CatchPokemon(pokemon Pokemon) error {
 	fmt.Println("Catching a Pokemon...")
@@ -34,7 +15,7 @@ func CatchPokemon(pokemon Pokemon) error {
 	switch true {
 	case captureChance >= 75 && captureChance <= 100:
 		fmt.Println("You caught the Pokemon!")
-		return AddPokemon(pokemon.Name, pokemon.Type, &pokedex)
+		return AddPokemon(pokemon.Name, pokemon.Type, pokedex)
 
 	case captureChance >= 25 && captureChance <= 75:
 		for i := 0; i < 3; i++ {
