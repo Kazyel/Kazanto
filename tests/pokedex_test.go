@@ -9,12 +9,12 @@ import (
 func TestPokedex(t *testing.T) {
 	pokedex := api.CreatePokedex()
 
-	api.AddPokemon("Pikachu", "Electric", pokedex)
-	api.AddPokemon("Charmander", "Fire", pokedex)
-	api.AddPokemon("Squirtle", "Water", pokedex)
-	api.AddPokemon("Bulbasaur", "Grass", pokedex)
+	pokedex.AddPokemon("Pikachu", "Electric")
+	pokedex.AddPokemon("Charmander", "Fire")
+	pokedex.AddPokemon("Squirtle", "Water")
+	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-	pokemon, _ := api.GetPokemon("Pikachu", pokedex)
+	pokemon, _ := pokedex.GetPokemon("Pikachu")
 
 	if pokemon.Name != "Pikachu" {
 		t.Errorf("Expected Pokemon name to be 'Pikachu', got '%s'.", pokemon.Name)
@@ -28,12 +28,12 @@ func TestPokedex(t *testing.T) {
 func TestPokedexDuplicate(t *testing.T) {
 	pokedex := api.CreatePokedex()
 
-	api.AddPokemon("Pikachu", "Electric", pokedex)
-	api.AddPokemon("Charmander", "Fire", pokedex)
-	api.AddPokemon("Squirtle", "Water", pokedex)
-	api.AddPokemon("Bulbasaur", "Grass", pokedex)
+	pokedex.AddPokemon("Pikachu", "Electric")
+	pokedex.AddPokemon("Charmander", "Fire")
+	pokedex.AddPokemon("Squirtle", "Water")
+	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-	err := api.AddPokemon("Pikachu", "Electric", pokedex)
+	err := pokedex.AddPokemon("Pikachu", "Electric")
 
 	if err == nil {
 		t.Errorf("Expected to not be able to add duplicate Pokemon.")
@@ -44,12 +44,12 @@ func TestPokedexDuplicate(t *testing.T) {
 func TestPokedexDeletion(t *testing.T) {
 	pokedex := api.CreatePokedex()
 
-	api.AddPokemon("Pikachu", "Electric", pokedex)
-	api.AddPokemon("Charmander", "Fire", pokedex)
-	api.AddPokemon("Squirtle", "Water", pokedex)
-	api.AddPokemon("Bulbasaur", "Grass", pokedex)
+	pokedex.AddPokemon("Pikachu", "Electric")
+	pokedex.AddPokemon("Charmander", "Fire")
+	pokedex.AddPokemon("Squirtle", "Water")
+	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-	err := api.WithdrawPokemon("Pikachu", pokedex)
+	err := pokedex.WithdrawPokemon("Pikachu")
 
 	if err != nil {
 		t.Errorf("Expected to be able to withdraw Pokemon.")

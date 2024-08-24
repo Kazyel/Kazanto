@@ -17,11 +17,11 @@ func CreatePokedex() *Pokedex {
 	}
 }
 
-func GetPokedex(pokedex *Pokedex) map[string]Pokemon {
+func (pokedex *Pokedex) GetPokedex() map[string]Pokemon {
 	return pokedex.Pokemons
 }
 
-func GetPokemon(name string, pokedex *Pokedex) (Pokemon, error) {
+func (pokedex *Pokedex) GetPokemon(name string) (Pokemon, error) {
 	if pokedex.Pokemons[name].Name == "" {
 		fmt.Println("Pokemon not captured.")
 		return Pokemon{}, fmt.Errorf("Pokemon not captured")
@@ -30,10 +30,9 @@ func GetPokemon(name string, pokedex *Pokedex) (Pokemon, error) {
 	return pokedex.Pokemons[name], nil
 }
 
-func AddPokemon(name string, typeName string, pokedex *Pokedex) error {
+func (pokedex *Pokedex) AddPokemon(name string, typeName string) error {
 	if pokedex.Pokemons[name].Name != "" {
 		fmt.Println("Pokemon already captured.")
-
 		return fmt.Errorf("Pokemon already captured")
 	}
 
@@ -45,10 +44,9 @@ func AddPokemon(name string, typeName string, pokedex *Pokedex) error {
 	return nil
 }
 
-func WithdrawPokemon(name string, pokedex *Pokedex) error {
+func (pokedex *Pokedex) WithdrawPokemon(name string) error {
 	if pokedex.Pokemons[name].Name == "" {
 		fmt.Println("Pokemon not captured.")
-
 		return fmt.Errorf("Pokemon not captured")
 	}
 

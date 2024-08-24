@@ -15,7 +15,7 @@ func CatchPokemon(pokemon Pokemon) error {
 	switch true {
 	case captureChance >= 75 && captureChance <= 100:
 		fmt.Println("You caught the Pokemon!")
-		return AddPokemon(pokemon.Name, pokemon.Type, pokedex)
+		return pokedex.AddPokemon(pokemon.Name, pokemon.Type)
 
 	case captureChance >= 25 && captureChance <= 75:
 		for i := 0; i < 3; i++ {
