@@ -33,7 +33,7 @@ func PrintAction(action string, isSecondary string) {
 	formattedAction := action + "...\n"
 
 	if isSecondary == "secondary" {
-		color.New(color.FgHiGreen, color.Bold).Fprintf(os.Stdout, action)
+		color.New(color.FgHiGreen, color.Bold).Fprintf(os.Stdout, formattedAction)
 		return
 	}
 

@@ -9,8 +9,16 @@ import (
 )
 
 type Pokemon struct {
-	Name string
-	Type string
+	Name  string
+	Types []string
+	Moves []struct {
+		Move struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		}
+	}
+	Height int
+	Weight int
 }
 type Pokedex struct {
 	Pokemons map[string]Pokemon
@@ -26,11 +34,23 @@ func (pokedex *Pokedex) RenderPokedex() {
 	headerFmt := color.New(color.FgHiBlue, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	tbl := table.New("Name", "Type")
+	tbl := table.New("Name", "Types", "Height", "Weight")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, pokemon := range pokedex.Pokemons {
-		tbl.AddRow(pokemon.Name, pokemon.Type)
+		weight := fmt.Sprintf("%.1f kg", float64(pokemon.Weight)/10)
+		height := fmt.Sprintf("%.1f m", float64(pokemon.Height)/10)
+		types := ""
+
+		for i, pokemonType := range pokemon.Types {
+			types += pokemonType
+
+			if i < len(pokemon.Types)-1 {
+				types += "& "
+			}
+		}
+
+		tbl.AddRow(pokemon.Name, types, height, weight)
 	}
 
 	tbl.Print()
@@ -45,15 +65,24 @@ func (pokedex *Pokedex) GetPokemon(name string) (Pokemon, error) {
 	return pokedex.Pokemons[name], nil
 }
 
-func (pokedex *Pokedex) AddPokemon(name string, typeName string) error {
-	if pokedex.Pokemons[name].Name != "" {
+func (pokedex *Pokedex) AddPokemon(pokemon PokemonResponse) error {
+	if pokedex.Pokemons[pokemon.Name].Name != "" {
 		utils.PrintError("Pokemon already captured.")
 		return fmt.Errorf("Pokemon already captured")
 	}
 
-	pokedex.Pokemons[name] = Pokemon{
-		Name: name,
-		Type: typeName,
+	pokemonTypes := make([]string, len(pokemon.Types))
+
+	for i, pokemonType := range pokemon.Types {
+		pokemonTypes[i] = pokemonType.Type.Name
+	}
+
+	pokedex.Pokemons[pokemon.Name] = Pokemon{
+		Name:   pokemon.Name,
+		Types:  pokemonTypes,
+		Moves:  pokemon.Moves,
+		Height: pokemon.Height,
+		Weight: pokemon.Weight,
 	}
 
 	return nil

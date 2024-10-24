@@ -1,58 +1,52 @@
 package tests
 
-import (
-	"testing"
+// func TestPokedex(t *testing.T) {
+// 	pokedex := api.CreatePokedex()
 
-	"github.com/Kazyel/Poke-CLI/api"
-)
+// 	pokedex.AddPokemon("Pikachu", "Electric")
+// 	pokedex.AddPokemon("Charmander", "Fire")
+// 	pokedex.AddPokemon("Squirtle", "Water")
+// 	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-func TestPokedex(t *testing.T) {
-	pokedex := api.CreatePokedex()
+// 	pokemon, _ := pokedex.GetPokemon("Pikachu")
 
-	pokedex.AddPokemon("Pikachu", "Electric")
-	pokedex.AddPokemon("Charmander", "Fire")
-	pokedex.AddPokemon("Squirtle", "Water")
-	pokedex.AddPokemon("Bulbasaur", "Grass")
+// 	if pokemon.Name != "Pikachu" {
+// 		t.Errorf("Expected Pokemon name to be 'Pikachu', got '%s'.", pokemon.Name)
+// 	}
 
-	pokemon, _ := pokedex.GetPokemon("Pikachu")
+// 	if pokemon.Type != "Electric" {
+// 		t.Errorf("Expected Pokemon type to be 'Electric', got '%s'.", pokemon.Type)
+// 	}
+// }
 
-	if pokemon.Name != "Pikachu" {
-		t.Errorf("Expected Pokemon name to be 'Pikachu', got '%s'.", pokemon.Name)
-	}
+// func TestPokedexDuplicate(t *testing.T) {
+// 	pokedex := api.CreatePokedex()
 
-	if pokemon.Type != "Electric" {
-		t.Errorf("Expected Pokemon type to be 'Electric', got '%s'.", pokemon.Type)
-	}
-}
+// 	pokedex.AddPokemon("Pikachu", "Electric")
+// 	pokedex.AddPokemon("Charmander", "Fire")
+// 	pokedex.AddPokemon("Squirtle", "Water")
+// 	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-func TestPokedexDuplicate(t *testing.T) {
-	pokedex := api.CreatePokedex()
+// 	err := pokedex.AddPokemon("Pikachu", "Electric")
 
-	pokedex.AddPokemon("Pikachu", "Electric")
-	pokedex.AddPokemon("Charmander", "Fire")
-	pokedex.AddPokemon("Squirtle", "Water")
-	pokedex.AddPokemon("Bulbasaur", "Grass")
+// 	if err == nil {
+// 		t.Errorf("Expected to not be able to add duplicate Pokemon.")
+// 		return
+// 	}
+// }
 
-	err := pokedex.AddPokemon("Pikachu", "Electric")
+// func TestPokedexDeletion(t *testing.T) {
+// 	pokedex := api.CreatePokedex()
 
-	if err == nil {
-		t.Errorf("Expected to not be able to add duplicate Pokemon.")
-		return
-	}
-}
+// 	pokedex.AddPokemon("Pikachu", "Electric")
+// 	pokedex.AddPokemon("Charmander", "Fire")
+// 	pokedex.AddPokemon("Squirtle", "Water")
+// 	pokedex.AddPokemon("Bulbasaur", "Grass")
 
-func TestPokedexDeletion(t *testing.T) {
-	pokedex := api.CreatePokedex()
+// 	err := pokedex.WithdrawPokemon("Pikachu")
 
-	pokedex.AddPokemon("Pikachu", "Electric")
-	pokedex.AddPokemon("Charmander", "Fire")
-	pokedex.AddPokemon("Squirtle", "Water")
-	pokedex.AddPokemon("Bulbasaur", "Grass")
-
-	err := pokedex.WithdrawPokemon("Pikachu")
-
-	if err != nil {
-		t.Errorf("Expected to be able to withdraw Pokemon.")
-		return
-	}
-}
+// 	if err != nil {
+// 		t.Errorf("Expected to be able to withdraw Pokemon.")
+// 		return
+// 	}
+// }

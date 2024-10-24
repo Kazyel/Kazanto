@@ -25,6 +25,8 @@ type PokemonResponse struct {
 		}
 	}
 	BaseExperience int `json:"base_experience"`
+	Height         int `json:"height"`
+	Weight         int `json:"weight"`
 }
 
 var pokemonResponse PokemonResponse = PokemonResponse{}
@@ -50,7 +52,7 @@ func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 	switch true {
 	case captureChance >= 75:
 		utils.PrintSuccessfulCatch()
-		return pokedex.AddPokemon(pokeRes.Name, pokeRes.Types[0].Type.Name)
+		return pokedex.AddPokemon(pokeRes)
 
 	case captureChance >= 15 && captureChance <= 75:
 		for i := 0; i < 2; i++ {
@@ -61,7 +63,7 @@ func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 
 			if captureRetry >= captureChance {
 				utils.PrintSuccessfulCatch()
-				return pokedex.AddPokemon(pokeRes.Name, pokeRes.Types[0].Type.Name)
+				return pokedex.AddPokemon(pokeRes)
 			}
 		}
 
