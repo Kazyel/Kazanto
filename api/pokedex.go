@@ -2,6 +2,9 @@ package api
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/Kazyel/Poke-CLI/utils"
 	"github.com/fatih/color"
@@ -9,14 +12,10 @@ import (
 )
 
 type Pokemon struct {
-	Name  string
-	Types []string
-	Moves []struct {
-		Move struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		}
-	}
+	Name   string
+	Types  []string
+	Moves  []string
+	Stats  map[string]int
 	Height int
 	Weight int
 }
@@ -65,13 +64,22 @@ func (pokedex *Pokedex) InspectPokemon(name string) (Pokemon, error) {
 	utils.PrintAction("Inspecting "+name, "primary")
 	utils.PrintTitle("Pokémon info:")
 
-	fmt.Printf("Name: %v\n", pokedex.Pokemons[name].Name)
+	color.New(color.FgHiCyan, color.Bold).Fprint(os.Stdout, "Name: ")
+	color.New(color.Reset).Fprint(os.Stdout, pokedex.Pokemons[name].Name)
 
 	if len(pokedex.Pokemons[name].Types) > 1 {
-		fmt.Printf("Types: %v & %v\n", pokedex.Pokemons[name].Types[0], pokedex.Pokemons[name].Types[1])
+		color.New(color.FgHiCyan, color.Bold).Fprint(os.Stdout, "\nTypes: ")
+		color.New(color.Reset).Fprint(os.Stdout, pokedex.Pokemons[name].Types[0]+" & "+pokedex.Pokemons[name].Types[1])
+	} else {
+		color.New(color.FgHiCyan, color.Bold).Fprint(os.Stdout, "\nTypes: ")
+		color.New(color.Reset).Fprint(os.Stdout, pokedex.Pokemons[name].Types[0])
 	}
 
-	fmt.Printf("Types: %v\n", pokedex.Pokemons[name].Types[0])
+	color.New(color.FgHiCyan, color.Bold).Fprint(os.Stdout, "\nStats:\n")
+	for stat, value := range pokedex.Pokemons[name].Stats {
+		color.New(color.FgHiMagenta, color.Bold).Fprint(os.Stdout, "- "+stat+": ")
+		color.New(color.FgHiYellow).Fprint(os.Stdout, strconv.Itoa(value)+"\n")
+	}
 
 	return pokedex.Pokemons[name], nil
 }
@@ -83,15 +91,30 @@ func (pokedex *Pokedex) AddPokemon(pokemon PokemonResponse) error {
 	}
 
 	pokemonTypes := make([]string, len(pokemon.Types))
+	pokemonMoves := make([]string, len(pokemon.Moves))
+	pokemonStats := make(map[string]int, len(pokemon.Stats))
 
 	for i, pokemonType := range pokemon.Types {
 		pokemonTypes[i] = pokemonType.Type.Name
 	}
 
+	for i, pokemonMove := range pokemon.Moves {
+		pokemonMoves[i] = pokemonMove.Move.Name
+	}
+
+	for _, pokemonStat := range pokemon.Stats {
+		splittedString := strings.Split(pokemonStat.Stat.Name, "-")
+		joinedString := strings.Join(splittedString, " ")
+
+		statName := strings.ToUpper(joinedString[0:1]) + joinedString[1:]
+		pokemonStats[statName] = pokemonStat.BaseStat
+	}
+
 	pokedex.Pokemons[pokemon.Name] = Pokemon{
 		Name:   pokemon.Name,
 		Types:  pokemonTypes,
-		Moves:  pokemon.Moves,
+		Moves:  pokemonMoves,
+		Stats:  pokemonStats,
 		Height: pokemon.Height,
 		Weight: pokemon.Weight,
 	}
