@@ -31,6 +31,11 @@ type PokemonResponse struct {
 
 var pokemonResponse PokemonResponse = PokemonResponse{}
 
+func generateCatchChance(expBase int) int {
+	captureChance := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
+	return int(captureChance)
+}
+
 func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 	if pokedex.Pokemons[pokemon].Name != "" {
 		utils.PrintError("Pokemon already captured.")
@@ -47,7 +52,7 @@ func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 	time.Sleep(time.Second * 1)
 
 	expBase := pokeRes.BaseExperience
-	captureChance := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
+	captureChance := generateCatchChance(expBase)
 
 	switch true {
 	case captureChance >= 75:
@@ -56,10 +61,10 @@ func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 
 	case captureChance >= 15 && captureChance <= 75:
 		for i := 0; i < 2; i++ {
-			time.Sleep(time.Second * 2)
 			utils.PrintAction("Trying again", "secondary")
+			time.Sleep(time.Second * 2)
 
-			captureRetry := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
+			captureRetry := generateCatchChance(expBase)
 
 			if captureRetry >= captureChance {
 				utils.PrintSuccessfulCatch()

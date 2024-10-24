@@ -42,7 +42,7 @@ func main() {
 		case "help":
 			commandMap[0].callback()
 
-			keySlice := []int{1, 2, 3, 4, 5, 6}
+			keySlice := []int{1, 2, 3, 4, 5, 6, 7}
 			for key := range keySlice {
 				utils.PrintCommmands(commandMap[key].name, commandMap[key].description)
 			}
@@ -67,13 +67,36 @@ func main() {
 			commandMap[3].callback(args[1])
 
 		case "catch":
+			if len(args) < 2 {
+				utils.PrintError("Please provide a pokémon to catch.")
+				continue
+			}
+
+			if len(args) > 2 {
+				utils.PrintError("Too many arguments. Please provide only one pokémon.")
+				continue
+			}
+
 			commandMap[4].callback(args[1], pokedex)
 
+		case "inspect":
+			if len(args) < 2 {
+				utils.PrintError("Please provide only one pokémon to inspect.")
+				continue
+			}
+
+			if len(args) > 2 {
+				utils.PrintError("Too many arguments. Please provide only one pokémon.")
+				continue
+			}
+
+			commandMap[5].callback(args[1], pokedex)
+
 		case "pokedex":
-			commandMap[5].callback(pokedex)
+			commandMap[6].callback(pokedex)
 
 		case "exit":
-			commandMap[6].callback()
+			commandMap[7].callback()
 
 		default:
 			utils.PrintError("Invalid command.")

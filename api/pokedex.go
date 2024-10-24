@@ -34,7 +34,7 @@ func (pokedex *Pokedex) RenderPokedex() {
 	headerFmt := color.New(color.FgHiBlue, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	tbl := table.New("Name", "Types", "Height", "Weight")
+	tbl := table.New("\nName", "Types", "Height", "Weight")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, pokemon := range pokedex.Pokemons {
@@ -46,7 +46,7 @@ func (pokedex *Pokedex) RenderPokedex() {
 			types += pokemonType
 
 			if i < len(pokemon.Types)-1 {
-				types += "& "
+				types += " & "
 			}
 		}
 
@@ -56,11 +56,22 @@ func (pokedex *Pokedex) RenderPokedex() {
 	tbl.Print()
 }
 
-func (pokedex *Pokedex) GetPokemon(name string) (Pokemon, error) {
+func (pokedex *Pokedex) InspectPokemon(name string) (Pokemon, error) {
 	if pokedex.Pokemons[name].Name == "" {
-		utils.PrintError("Pokemon not captured.")
-		return Pokemon{}, fmt.Errorf("Pokemon not captured")
+		utils.PrintError("Pokemon not captured yet.")
+		return Pokemon{}, fmt.Errorf("Pokemon not captured yet")
 	}
+
+	utils.PrintAction("Inspecting "+name, "primary")
+	utils.PrintTitle("Pokémon info:")
+
+	fmt.Printf("Name: %v\n", pokedex.Pokemons[name].Name)
+
+	if len(pokedex.Pokemons[name].Types) > 1 {
+		fmt.Printf("Types: %v & %v\n", pokedex.Pokemons[name].Types[0], pokedex.Pokemons[name].Types[1])
+	}
+
+	fmt.Printf("Types: %v\n", pokedex.Pokemons[name].Types[0])
 
 	return pokedex.Pokemons[name], nil
 }

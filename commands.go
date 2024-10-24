@@ -58,6 +58,14 @@ func Commands() map[int]cliCommand {
 			},
 		},
 		5: {
+			name:        "inspect",
+			description: "Inspect a Pokemon.",
+			callback: func(pokemon ...interface{}) error {
+				pokemon[1].(*api.Pokedex).InspectPokemon(pokemon[0].(string))
+				return nil
+			},
+		},
+		6: {
 			name:        "pokedex",
 			description: "Displays the Pokedex.",
 			callback: func(pokedex ...interface{}) error {
@@ -65,7 +73,7 @@ func Commands() map[int]cliCommand {
 				return nil
 			},
 		},
-		6: {
+		7: {
 			name:        "exit",
 			description: "Exit the Pokedex.",
 			callback:    func(...interface{}) error { return commandExit() },
