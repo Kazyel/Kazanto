@@ -2,42 +2,78 @@ package api
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
+
+	"github.com/Kazyel/Poke-CLI/utils"
 )
 
-var pokedex *Pokedex = CreatePokedex()
+type PokemonResponse struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Moves []struct {
+		Move struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		}
+	}
+	Types []struct {
+		Type struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		}
+	}
+	BaseExperience int `json:"base_experience"`
+}
 
-func CatchPokemon(pokemon Pokemon) error {
-	fmt.Println("Catching a Pokemon...")
-	captureChance := rand.Intn(100)
+var pokemonResponse PokemonResponse = PokemonResponse{}
+
+func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
+	if pokedex.Pokemons[pokemon].Name != "" {
+		utils.PrintError("Pokemon already captured.")
+		return fmt.Errorf("Pokemon already captured")
+	}
+
+	pokeRes, err := FetchPokemonData(pokemon)
+
+	if err != nil {
+		return err
+	}
+
+	utils.PrintAction("Catching "+pokeRes.Name, "primary")
+	time.Sleep(time.Second * 1)
+
+	expBase := pokeRes.BaseExperience
+	captureChance := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
 
 	switch true {
-	case captureChance >= 75 && captureChance <= 100:
-		fmt.Println("You caught the Pokemon!")
-		return pokedex.AddPokemon(pokemon.Name, pokemon.Type)
+	case captureChance >= 75:
+		utils.PrintSuccessfulCatch()
+		return pokedex.AddPokemon(pokeRes.Name, pokeRes.Types[0].Type.Name)
 
-	case captureChance >= 25 && captureChance <= 75:
-		for i := 0; i < 3; i++ {
+	case captureChance >= 15 && captureChance <= 75:
+		for i := 0; i < 2; i++ {
 			time.Sleep(time.Second * 2)
-			fmt.Println("Trying again...")
+			utils.PrintAction("Trying again", "secondary")
 
-			captureRetry := rand.Intn(5)
-			if captureRetry >= 4 {
-				fmt.Println("You caught the Pokemon!")
-				return nil
+			captureRetry := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
+
+			if captureRetry >= captureChance {
+				utils.PrintSuccessfulCatch()
+				return pokedex.AddPokemon(pokeRes.Name, pokeRes.Types[0].Type.Name)
 			}
 		}
 
-		fmt.Println("You failed to catch a Pokemon.")
+		utils.PrintFailedCatch(pokeRes.Name)
 		return nil
 
-	case captureChance >= 0 && captureChance <= 25:
-		fmt.Println("You failed to catch a Pokemon.")
+	case captureChance >= 0 && captureChance <= 15:
+		utils.PrintFailedCatch(pokeRes.Name)
 		return nil
 
 	default:
-		fmt.Println("Something went wrong.")
+		utils.PrintError("Something went wrong.")
 		return nil
 	}
 }

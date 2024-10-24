@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Kazyel/Poke-CLI/api"
+	"github.com/Kazyel/Poke-CLI/utils"
 )
 
 type cliCommand struct {
@@ -20,41 +21,51 @@ func commandExit() error {
 }
 
 func commandHelp() error {
-	fmt.Print("\nThese are the available commands:\n\n")
+	utils.PrintTitle("These are the available commands:")
 	return nil
 }
 
 // Commands returns a map of commands.
-func Commands() map[string]cliCommand {
-	return map[string]cliCommand{
-		"help": {
+func Commands() map[int]cliCommand {
+	return map[int]cliCommand{
+		0: {
 			name:        "help",
 			description: "Displays a help message.",
 			callback:    func(...interface{}) error { return commandHelp() },
 		},
-		"map": {
+		1: {
 			name:        "map",
 			description: "Displays the next 20 maps.",
 			callback:    func(...interface{}) error { return api.GetNextLocations() },
 		},
-		"mapback": {
+		2: {
 			name:        "mapback",
 			description: "Displays the previous 20 maps.",
 			callback:    func(...interface{}) error { return api.GetPreviousLocations() },
 		},
-		"explore": {
+		3: {
 			name:        "explore",
 			description: "Explore a location.",
 			callback: func(location ...interface{}) error {
 				return api.ExploreLocation(location[0].(string))
 			},
 		},
-		"catch": {
+		4: {
 			name:        "catch",
 			description: "Catch a Pokemon.",
-			callback:    func(pokemon ...interface{}) error { return api.CatchPokemon(pokemon[0].(api.Pokemon)) },
+			callback: func(pokemon ...interface{}) error {
+				return pokemon[1].(*api.Pokedex).CatchPokemon(pokemon[0].(string))
+			},
 		},
-		"exit": {
+		5: {
+			name:        "pokedex",
+			description: "Displays the Pokedex.",
+			callback: func(pokedex ...interface{}) error {
+				pokedex[0].(*api.Pokedex).RenderPokedex()
+				return nil
+			},
+		},
+		6: {
 			name:        "exit",
 			description: "Exit the Pokedex.",
 			callback:    func(...interface{}) error { return commandExit() },

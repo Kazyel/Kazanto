@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Kazyel/Poke-CLI/cache"
+	"github.com/Kazyel/Poke-CLI/utils"
 )
 
 type LocationResponse struct {
@@ -29,8 +30,8 @@ func unmarshalLocations(body []byte, locations *LocationResponse) error {
 	err := json.Unmarshal(body, &locations)
 
 	if err != nil {
-		fmt.Println("Error unmarshalling locations.")
-		return err
+		utils.PrintError("Error unmarshalling locations.")
+		return fmt.Errorf("error unmarshalling locations")
 	}
 
 	return nil
@@ -38,7 +39,7 @@ func unmarshalLocations(body []byte, locations *LocationResponse) error {
 
 // printLocations prints the locations from the PokeAPI.
 func printLocations(locations LocationResponse) {
-	fmt.Print("Current locations:\n\n")
+	utils.PrintTitle("Current locations:")
 
 	for _, location := range locations.Results {
 		fmt.Println(location.Name)
@@ -61,7 +62,7 @@ func checkLocationCache(url string) bool {
 		}
 
 		if locations.Results != nil {
-			fmt.Println("[CACHED] Getting next locations...")
+			utils.PrintCachedAction("Getting next locations")
 			printLocations(locations)
 		}
 
@@ -80,7 +81,7 @@ func GetNextLocations() error {
 	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
 
 	if locations.Next == nil && locations.Results != nil {
-		fmt.Println("No more next locations.")
+		utils.PrintError("No more next locations.")
 		return nil
 	}
 
@@ -97,7 +98,8 @@ func GetNextLocations() error {
 	response, err := http.Get(url)
 
 	if err != nil {
-		fmt.Println("Error getting next locations.")
+		utils.PrintError("Error getting locations.")
+		return fmt.Errorf("error getting locations")
 	}
 
 	body, err := io.ReadAll(response.Body)
@@ -119,7 +121,7 @@ func GetNextLocations() error {
 	}
 
 	if locations.Results != nil {
-		fmt.Println("Getting next locations...")
+		utils.PrintAction("Getting next locations", "primary")
 		printLocations(locations)
 	}
 
@@ -135,7 +137,7 @@ func GetPreviousLocations() error {
 	var url string
 
 	if locations.Previous == nil {
-		fmt.Println("No previous locations.")
+		utils.PrintError("No previous locations.")
 		locations.Next = "https://pokeapi.co/api/v2/location-area/"
 		return nil
 	}
@@ -151,7 +153,7 @@ func GetPreviousLocations() error {
 		}
 
 		if locations.Results != nil {
-			fmt.Println("[CACHED] Getting previous locations...")
+			utils.PrintCachedAction("Getting previous locations")
 			printLocations(locations)
 		}
 
@@ -161,7 +163,8 @@ func GetPreviousLocations() error {
 	response, err := http.Get(url)
 
 	if err != nil {
-		fmt.Println("Error getting next locations.")
+		utils.PrintError("Error getting locations.")
+		return fmt.Errorf("error getting locations")
 	}
 
 	body, err := io.ReadAll(response.Body)
@@ -183,7 +186,7 @@ func GetPreviousLocations() error {
 	}
 
 	if locations.Results != nil {
-		fmt.Println("Getting previous locations...")
+		utils.PrintAction("Getting previous locations", "primary")
 		printLocations(locations)
 	}
 
