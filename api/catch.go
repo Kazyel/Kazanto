@@ -37,12 +37,12 @@ type PokemonResponse struct {
 
 var pokemonResponse PokemonResponse = PokemonResponse{}
 
-func generateCatchChance(expBase int) int {
-	captureChance := math.Floor(((rand.Float64() * 100) / float64(expBase)) * 100)
+func generateCatchChance(expBase int, pokeballMultiplier float64) int {
+	captureChance := math.Floor(((rand.Float64()*100)/float64(expBase))*100) * pokeballMultiplier
 	return int(captureChance)
 }
 
-func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
+func (pokedex *Pokedex) CatchPokemon(pokemon string, pokeball Pokeball) error {
 	if pokedex.Pokemons[pokemon].Name != "" {
 		utils.PrintError("Pokemon already captured.")
 		return fmt.Errorf("Pokemon already captured")
@@ -54,27 +54,28 @@ func (pokedex *Pokedex) CatchPokemon(pokemon string) error {
 		return err
 	}
 
+	utils.PrintAction("You throw a "+pokeball.Name, "primary")
 	utils.PrintAction("Catching "+pokeRes.Name, "primary")
 	time.Sleep(time.Second * 1)
 
 	expBase := pokeRes.BaseExperience
-	captureChance := generateCatchChance(expBase)
+	captureChance := generateCatchChance(expBase, pokeball.CatchMultiplier)
 
 	switch true {
 	case captureChance >= 75:
 		utils.PrintSuccessfulCatch()
-		return pokedex.AddPokemon(pokeRes)
+		return pokedex.CapturePokemon(pokeRes)
 
 	case captureChance >= 15 && captureChance <= 75:
 		for i := 0; i < 2; i++ {
 			utils.PrintAction("Trying again", "secondary")
 			time.Sleep(time.Second * 2)
 
-			captureRetry := generateCatchChance(expBase)
+			captureRetry := generateCatchChance(expBase, pokeball.CatchMultiplier)
 
 			if captureRetry >= captureChance {
 				utils.PrintSuccessfulCatch()
-				return pokedex.AddPokemon(pokeRes)
+				return pokedex.CapturePokemon(pokeRes)
 			}
 		}
 

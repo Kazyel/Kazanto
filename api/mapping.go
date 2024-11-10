@@ -104,7 +104,7 @@ func GetNextLocations() error {
 
 	body, err := io.ReadAll(response.Body)
 	locationsCache.AddToCache(url, []byte(body))
-	response.Body.Close()
+	defer response.Body.Close()
 
 	if response.StatusCode > 299 {
 		log.Fatalf("Response failed with status code %d", response.StatusCode)

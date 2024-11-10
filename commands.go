@@ -14,7 +14,7 @@ type cliCommand struct {
 	callback    func(...interface{}) error
 }
 
-func commandExit() error {
+func CommandExit() error {
 	fmt.Println("\nExiting Poke-CLI...")
 	os.Exit(0)
 	return nil
@@ -53,8 +53,9 @@ func Commands() map[int]cliCommand {
 		4: {
 			name:        "catch",
 			description: "Catch a Pokemon.",
-			callback: func(pokemon ...interface{}) error {
-				return pokemon[1].(*api.Pokedex).CatchPokemon(pokemon[0].(string))
+			callback: func(args ...interface{}) error {
+				return args[1].(*api.Player).
+					Pokedex.CatchPokemon(args[0].(string), args[2].(api.Pokeball))
 			},
 		},
 		5: {
@@ -74,9 +75,17 @@ func Commands() map[int]cliCommand {
 			},
 		},
 		7: {
+			name:        "inventory",
+			description: "Displays the player inventory.",
+			callback: func(player ...interface{}) error {
+				player[0].(*api.Player).InspectInventory()
+				return nil
+			},
+		},
+		8: {
 			name:        "exit",
 			description: "Exit the Pokedex.",
-			callback:    func(...interface{}) error { return commandExit() },
+			callback:    func(...interface{}) error { return CommandExit() },
 		},
 	}
 }

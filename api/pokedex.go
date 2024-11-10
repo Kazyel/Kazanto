@@ -33,7 +33,7 @@ func (pokedex *Pokedex) RenderPokedex() {
 	headerFmt := color.New(color.FgHiBlue, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	tbl := table.New("\nName", "Types", "Height", "Weight")
+	tbl := table.New("Name", "Types", "Height", "Weight")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, pokemon := range pokedex.Pokemons {
@@ -84,7 +84,7 @@ func (pokedex *Pokedex) InspectPokemon(name string) (Pokemon, error) {
 	return pokedex.Pokemons[name], nil
 }
 
-func (pokedex *Pokedex) AddPokemon(pokemon PokemonResponse) error {
+func (pokedex *Pokedex) CapturePokemon(pokemon PokemonResponse) error {
 	if pokedex.Pokemons[pokemon.Name].Name != "" {
 		utils.PrintError("Pokemon already captured.")
 		return fmt.Errorf("Pokemon already captured")
