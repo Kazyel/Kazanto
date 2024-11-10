@@ -16,6 +16,6 @@ As for now, Kazanto is missing a lot of main features:
 
 - Pokémon fights (trainers, random encounters);
 - No experience gains and no evolving;
-- Pokéballs;
+- ~Pokéballs~;
 - Pokémon Party;
 - Quality of Life.
